@@ -19,3 +19,8 @@ let g:syntastic_javascript_args = "-c ./.eslintrc"
 map <leader>wc <C-W>c
 map <leader>wn <C-W>n
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Set airline theme
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:airline_theme='papercolor'
+
