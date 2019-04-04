@@ -25,6 +25,9 @@ if has("gui_macvim")
     au GUIEnter * set fullscreen
 endif
 
+" Set relative number counts
+set relativenumber
+
 " Disable scrollbars (real hackers don't use scrollbars for navigation!)
 set guioptions-=r
 set guioptions-=R
@@ -110,9 +113,8 @@ iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Omni complete functions
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-autocmd FileType css set omnifunc=csscomplete#CompleteCSS
-
-
+set omnifunc=syntaxcomplete#Complete
+inoremap <C-i> <C-x><C-o>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Helper functions

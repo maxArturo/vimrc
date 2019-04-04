@@ -35,7 +35,7 @@ vim-multiple-cursors https://github.com/terryma/vim-multiple-cursors
 vim-fugitive https://github.com/tpope/vim-fugitive
 vim-airline https://github.com/vim-airline/vim-airline
 vim-airline-themes https://github.com/vim-airline/vim-airline-themes
-typescript https://github.com/leafgarland/typescript-vim
+tsuquyomi https://github.com/Quramy/tsuquyomi
 goyo.vim https://github.com/junegunn/goyo.vim
 vim-zenroom2 https://github.com/amix/vim-zenroom2
 syntastic https://github.com/scrooloose/syntastic

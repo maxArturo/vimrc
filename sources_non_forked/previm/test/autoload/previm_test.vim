@@ -1,3 +1,5 @@
+scriptencoding utf-8
+
 let s:newline = "\\n"
 let s:assert = themis#helper('assert')
 
@@ -11,7 +13,7 @@ endfunction
 
 function! s:t.not_exists_escaped()
   let arg = ['aaabbb', 'あいうえお漢字']
-  let expected = 
+  let expected =
         \   'aaabbb' . s:newline
         \ . 'あいうえお漢字'
   call s:assert.equals(previm#convert_to_content(arg), expected)
@@ -69,7 +71,7 @@ function! s:t.replace_path_when_relative()
   let rel_path = 'previm/some/path/img.png'
   let arg_line = printf('![img](%s)', rel_path)
   let arg_dir = '/Users/foo/tmp'
-  let expected = printf('![img](file://localhost%s/%s)', arg_dir, rel_path)
+  let expected = printf('![img](//localhost%s/%s)', arg_dir, rel_path)
   call s:assert.equals(previm#relative_to_absolute_imgpath(arg_line, arg_dir), expected)
 endfunction
 
@@ -77,7 +79,7 @@ function! s:t.urlencoded_path()
   let rel_path = 'previm\some\path\img.png'
   let arg_line = printf('![img](%s)', rel_path)
   let arg_dir = 'C:\Documents and Settings\folder'
-  let expected = '![img](file://localhost/C:\Documents%20and%20Settings\folder/previm\some\path\img.png)'
+  let expected = '![img](//localhost/C:\Documents%20and%20Settings\folder/previm\some\path\img.png)'
   call s:assert.equals(previm#relative_to_absolute_imgpath(arg_line, arg_dir), expected)
 endfunction
 
@@ -85,7 +87,7 @@ function! s:t.with_title_from_double_quote()
   let rel_path = 'previm\some\path\img.png'
   let arg_line = printf('![img](%s "title")', rel_path)
   let arg_dir = 'C:\Documents and Settings\folder'
-  let expected = '![img](file://localhost/C:\Documents%20and%20Settings\folder/previm\some\path\img.png "title")'
+  let expected = '![img](//localhost/C:\Documents%20and%20Settings\folder/previm\some\path\img.png "title")'
   call s:assert.equals(previm#relative_to_absolute_imgpath(arg_line, arg_dir), expected)
 endfunction
 
@@ -93,7 +95,7 @@ function! s:t.with_title_from_single_quote()
   let rel_path = 'previm\some\path\img.png'
   let arg_line = printf("![img](%s 'title')", rel_path)
   let arg_dir = 'C:\Documents and Settings\folder'
-  let expected = '![img](file://localhost/C:\Documents%20and%20Settings\folder/previm\some\path\img.png "title")'
+  let expected = '![img](//localhost/C:\Documents%20and%20Settings\folder/previm\some\path\img.png "title")'
   call s:assert.equals(previm#relative_to_absolute_imgpath(arg_line, arg_dir), expected)
 endfunction
 
@@ -101,7 +103,7 @@ function! s:t.not_only_img()
   let rel_path = 'previm/some/path/img.png'
   let arg_line = printf('| a | ![img](%s) |', rel_path)
   let arg_dir  = '/Users/foo/tmp'
-  let expected = printf('| a | ![img](file://localhost%s/%s) |', arg_dir, rel_path)
+  let expected = printf('| a | ![img](//localhost%s/%s) |', arg_dir, rel_path)
   call s:assert.equals(previm#relative_to_absolute_imgpath(arg_line, arg_dir), expected)
 endfunction
 "}}}
@@ -121,6 +123,12 @@ endfunction
 
 function! s:t.get_alt_and_path()
   let arg = '![IMG](path/img.png)'
+  let expected = {'alt': 'IMG', 'path': 'path/img.png', 'title': ''}
+  call s:assert.equals(previm#fetch_imgpath_elements(arg), expected)
+endfunction
+
+function! s:t.get_alt_and_path_from_image_in_link()
+  let arg = '[![IMG](path/img.png)](path/some/file)'
   let expected = {'alt': 'IMG', 'path': 'path/img.png', 'title': ''}
   call s:assert.equals(previm#fetch_imgpath_elements(arg), expected)
 endfunction
@@ -170,22 +178,27 @@ function! s:t.teardown()
   endif
 endfunction
 
+let s:default_origin_css_path = "@import url('../../_/css/origin.css');"
+let s:default_github_css_path = "@import url('../../_/css/lib/github.css');"
 function! s:t.default_content_if_not_exists_setting()
   call previm#refresh_css()
   let actual = readfile(previm#make_preview_file_path('css/previm.css'))
   call s:assert.equals([
-        \ "@import url('origin.css');",
-        \ "@import url('lib/github.css');",
+        \ s:default_origin_css_path,
+        \ s:default_github_css_path
         \ ], actual)
 endfunction
 
 function! s:t.default_content_if_invalid_setting()
   let g:previm_disable_default_css = 2
+  if exists('g:previm_custom_css_path')
+    unlet g:previm_custom_css_path
+  endif
   call previm#refresh_css()
   let actual = readfile(previm#make_preview_file_path('css/previm.css'))
   call s:assert.equals([
-        \ "@import url('origin.css');",
-        \ "@import url('lib/github.css');",
+        \ s:default_origin_css_path,
+        \ s:default_github_css_path,
         \ ], actual)
 endfunction
 
@@ -208,3 +221,4 @@ function! s:t.empty_if_not_exists_file()
   call s:assert.equals(actual, [])
 endfunction
 "}}}
+"
